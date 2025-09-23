@@ -74,7 +74,13 @@ const InventoryItemUpdate = () => {
       currentStock
     };
 
-    axios.put("http://localhost:4000/api/inventoryItems/" + itemID, formData)
+    const adminUser = JSON.parse(localStorage.getItem('adminUser'))
+    
+    axios.put("http://localhost:4000/api/inventoryItems/" + itemID, formData, {
+      headers: {
+        'Authorization': `Bearer ${adminUser.userToken}`
+      }
+    })
       .then(res => {
         intentoryItemDispatch({ type: "UPDATE", payload: [itemID, { itemPrice, itemStockCount, currentStock, itemDescription, itemImageURL }] })
         setError("")

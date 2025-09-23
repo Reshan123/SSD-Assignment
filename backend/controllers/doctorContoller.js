@@ -4,8 +4,8 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 
-const createToken = (_id) => {
-    return jwt.sign({_id}, process.env.SECRET , { expiresIn: '3d' })
+const createToken = (_id, email, role = 'doctor') => {
+    return jwt.sign({_id, email, role}, process.env.SECRET , { expiresIn: '3d' })
 }
 
 const login = async (req, res) => {
@@ -16,7 +16,7 @@ const login = async (req, res) => {
         const user = await doctor.login(email, password)
 
         // create a token
-        const token = createToken(user._id)
+        const token = createToken(user._id, user.email, 'doctor')
 
         res.status(200).json({username: user.name, email: user.email,contactNo: user.contactNo, availability: user.availability, userToken: token})
 

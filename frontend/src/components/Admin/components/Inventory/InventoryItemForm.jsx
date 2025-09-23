@@ -32,12 +32,14 @@ const InventoryItemForm = () => {
         }
 
         const inventoryitem = { itemPrice, itemStockCount, currentStock: itemStockCount, itemDescription, itemImageURL, supplierID };
+        const adminUser = JSON.parse(localStorage.getItem('adminUser'));
 
         const response = await fetch('http://localhost:4000/api/inventoryItems/', {
             method: 'POST',
             body: JSON.stringify(inventoryitem),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${adminUser.userToken}`
             }
         });
 

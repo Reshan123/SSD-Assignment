@@ -39,8 +39,13 @@ const InventoryItemDetails = () => {
   const handleClick = async (id) => {
     const confrimDelte = confirm("Are you sure you want to delete the item ?")
     if (confrimDelte) {
+      const adminUser = JSON.parse(localStorage.getItem('adminUser'));
+      
       const response = await fetch('http://localhost:4000/api/inventoryItems/' + id, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${adminUser.userToken}`
+        }
       })
       const json = await response.json()
 

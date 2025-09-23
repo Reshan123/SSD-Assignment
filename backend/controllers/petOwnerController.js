@@ -4,8 +4,8 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 
-const createToken = (_id) => {
-    return jwt.sign({_id}, process.env.SECRET , { expiresIn: '3d' })
+const createToken = (_id, email, role = 'petOwner') => {
+    return jwt.sign({_id, email, role}, process.env.SECRET , { expiresIn: '3d' })
 }
 
 const login = async (req, res) => {
@@ -28,7 +28,7 @@ const login = async (req, res) => {
         }
 
         // create a token
-        const token = createToken(user._id)
+        const token = createToken(user._id, user.email, 'petOwner')
 
         res.status(200).json({username: user.name, email: user.email, userToken: token,uid:user._id})
 
@@ -68,7 +68,7 @@ const signin = async (req, res) => {
           const user = await petOwner.create({ name, email, password: hash })
 
         // create a token
-        const token = createToken(user._id)
+        const token = createToken(user._id, user.email, 'petOwner')
 
         res.status(200).json({username: user.name, email: user.email, userToken: token})
 

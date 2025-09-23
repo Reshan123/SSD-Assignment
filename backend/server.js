@@ -56,10 +56,16 @@ app.use("/api/sales", salesRoutes)
 
 
 app.use('/api/admin/login', (req, res) => {
+    const jwt = require('jsonwebtoken')
     const { email, password } = req.body
 
     if (email == "john@email.com" && password == "john1234") {
-        res.status(200).json({ username: "John Admin" })
+        const token = jwt.sign(
+            { _id: 'admin', email: 'john@email.com', role: 'admin' }, 
+            process.env.SECRET, 
+            { expiresIn: '3d' }
+        )
+        res.status(200).json({ username: "John Admin", email: "john@email.com", userToken: token })
     } else {
         res.status(400).json({ message: "Invalid Credentials" })
     }

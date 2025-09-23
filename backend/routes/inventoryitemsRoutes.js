@@ -1,4 +1,5 @@
 const express = require('express')
+const { authenticateToken, requireAdmin } = require('../middlewear/authMiddleware')
 const {
     getInventoryItems,
     getInventoryItem,
@@ -10,21 +11,14 @@ const {
 
 const router = express.Router()
 
-// GET all items
+// Public routes
 router.get('/', getInventoryItems)
-
-// GET a single item
-router.get('/:id',getInventoryItem)
-
-// POST a new item
-router.post('/',addNewItem )
-
-// DELETE an item
-router.delete('/:id', deleteItem)
-
-// UPDATE an item
-router.put('/:id', updateItem)
-
+router.get('/:id', getInventoryItem)
 router.put('/updateStockCount/:id', updateItemStockCount)
+
+// Protected admin routes
+router.post('/', authenticateToken, requireAdmin, addNewItem)
+router.delete('/:id', authenticateToken, requireAdmin, deleteItem)
+router.put('/:id', authenticateToken, requireAdmin, updateItem)
 
 module.exports = router
