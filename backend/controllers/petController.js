@@ -4,7 +4,7 @@ const pet = require('../models/petModel')
 
 
 const createPet = async (req, res) => {
-    const userID = req.user._id
+    const userID = req.user.id
     const {petName,petAge,petSpecies,petGender,petBreed} = req.body
 
     try{
@@ -95,7 +95,7 @@ const getSinglePet = async (req, res) => {
 }
 
 const getOneOwnerPets = async (req, res) => {
-    const userID = req.user._id
+    const userID = req.user.id
     try{
         if (!userID){
             throw Error("Invalid User ID")

@@ -80,7 +80,7 @@ const signin = async (req, res) => {
 
 const updateUserDetailsFromToken = async (req, res) => {
     const {name, email, password} = req.body;
-    const userID = req.user._id
+    const userID = req.user.id
 
     try{
         if (!name || !email) {
@@ -126,7 +126,7 @@ const updateUserDetailsFromToken = async (req, res) => {
 
 }
 const deleteUserDetailsFromToken = async (req, res) => {
-    const userID = req.user._id
+    const userID = req.user.id
     try{
         const userExist = await petOwner.findById(userID)
         if (!userExist){
@@ -174,7 +174,7 @@ const getAllUsers = async (req, res) => {
 }
 
 const verifyToken = async (req, res) => {
-    const userID = req.user._id
+    const userID = req.user.id
     
     try{
         if (!userID){

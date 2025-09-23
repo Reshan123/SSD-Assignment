@@ -1,5 +1,5 @@
 const express = require('express')
-const {authorize} = require('../middlewear/validateToken')
+const { authenticateToken } = require('../middlewear/authMiddleware')
 //controller imports
 const petOwnerController = require('../controllers/petOwnerController')
 
@@ -11,13 +11,15 @@ petOwnerRouter.post('/login', petOwnerController.login)
 
 petOwnerRouter.post('/signin', petOwnerController.signin)
 
-petOwnerRouter.put('/updateUserDetailsFromToken', authorize, petOwnerController.updateUserDetailsFromToken)
+//update and delete routes are protected and only accessible to authenticated users
+petOwnerRouter.put('/updateUserDetailsFromToken', authenticateToken, petOwnerController.updateUserDetailsFromToken)
 
-petOwnerRouter.delete('/deleteUserDetailsFromToken', authorize, petOwnerController.deleteUserDetailsFromToken)
+petOwnerRouter.delete('/deleteUserDetailsFromToken', authenticateToken, petOwnerController.deleteUserDetailsFromToken)
 
 petOwnerRouter.get('/getAllUsers', petOwnerController.getAllUsers)
 
-petOwnerRouter.get('/verifyToken', authorize,  petOwnerController.verifyToken)
+//verify token route to check if the token is valid and the user is a pet owner
+petOwnerRouter.get('/verifyToken', authenticateToken, petOwnerController.verifyToken)
 
 petOwnerRouter.delete('/deleteUserFromUserID/:userID',  petOwnerController.deleteUserFromUserID)
 

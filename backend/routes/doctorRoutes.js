@@ -1,5 +1,5 @@
 const express = require('express')
-const {authorize} = require('../middlewear/validateToken')
+const { authenticateToken, requireDoctor } = require('../middlewear/authMiddleware')
 //controller imports
 const doctorController = require('../controllers/doctorContoller')
 
@@ -13,9 +13,11 @@ doctorRouter.post('/login', doctorController.login)
 
 doctorRouter.post('/createDoctor', doctorController.createDoctor)
 
-doctorRouter.put('/updateDoctorDetailsFromToken', authorize, doctorController.updateDoctorDetailsFromToken)
+//update route is protected and only accessible to authenticated doctors
+doctorRouter.put('/updateDoctorDetailsFromToken', authenticateToken, requireDoctor, doctorController.updateDoctorDetailsFromToken)
 
-doctorRouter.delete('/deleteDoctorDetailsFromToken', authorize, doctorController.deleteDoctorDetailsFromToken)
+//delete route is protected and only accessible to authenticated doctors
+doctorRouter.delete('/deleteDoctorDetailsFromToken', authenticateToken, requireDoctor, doctorController.deleteDoctorDetailsFromToken)
 
 doctorRouter.get('/availableDoctors', doctorController.getAvailableDoctors)
 
@@ -23,6 +25,7 @@ doctorRouter.put('/updateDoctorFromID/:docID', doctorController.updateDoctorFrom
 
 doctorRouter.delete('/deleteDoctorFromID/:docID', doctorController.deleteDoctorFromID)
 
-doctorRouter.get('/verifyToken', authorize,  doctorController.verifyToken)
+//verify token route to check if the token is valid and the user is a doctor
+doctorRouter.get('/verifyToken', authenticateToken, requireDoctor, doctorController.verifyToken)
 
 module.exports = doctorRouter

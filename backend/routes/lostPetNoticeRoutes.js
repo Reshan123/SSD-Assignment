@@ -1,5 +1,5 @@
 const express = require('express')
-const {authorize} = require('../middlewear/validateToken')
+const { authenticateToken } = require('../middlewear/authMiddleware')
 const LostNoticeInfo = require('../models/lostPetNoticeModel')
 
 const router = express.Router()
@@ -8,7 +8,7 @@ const router = express.Router()
 const {createLostPetNotice,getNotice,getAllNotice,updateLostPetNotice,deleteLostPetNotice,getUserLostPetNotice}=require('../controllers/lostPetNoticeController')
 
 //route to create/posting the notice
-router.post('/',authorize, createLostPetNotice)
+router.post('/', authenticateToken, createLostPetNotice)
 
 //retriving a paticular notice
 router.get('/getSingleNotice/:id', getNotice)
@@ -23,6 +23,6 @@ router.patch('/:id', updateLostPetNotice)
 router.delete('/:id', deleteLostPetNotice)
 
 //getting the logged in user
-router.get('/getUser', authorize, getUserLostPetNotice)
+router.get('/getUser', authenticateToken, getUserLostPetNotice)
 
 module.exports = router

@@ -1,5 +1,5 @@
 const express = require('express')
-const {authorize} = require('../middlewear/validateToken')
+const { authenticateToken, requireAdmin } = require('../middlewear/authMiddleware')
 const { getAllPets, getSinglePet, getOneOwnerPets, createPet, adminCreatePet, deletePetFromID, updatePetFromID } = require('../controllers/petController')
 
 const petRouter = express.Router()
@@ -22,10 +22,10 @@ const upload = multer({
 
 petRouter.get("/getAllPets", getAllPets)
 petRouter.get("/getSinglePet/:id", getSinglePet)
-petRouter.get("/getOneOwnerPets", authorize, getOneOwnerPets)
+petRouter.get("/getOneOwnerPets", authenticateToken, getOneOwnerPets)
 
-petRouter.post("/createPet", authorize, upload.array('petImage', 5), createPet)
-petRouter.post("/adminCreatePet", upload.array('petImage', 5), adminCreatePet)
+petRouter.post("/createPet", authenticateToken, upload.array('petImage', 5), createPet)
+petRouter.post("/adminCreatePet", authenticateToken, requireAdmin, upload.array('petImage', 5), adminCreatePet)
 
 petRouter.delete("/deletePetFromID/:petID", deletePetFromID)
 petRouter.put("/updatePetFromID/:petID", upload.array('petImage', 5), updatePetFromID)

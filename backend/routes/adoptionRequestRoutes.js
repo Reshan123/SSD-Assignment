@@ -1,5 +1,5 @@
 const express = require('express')
-const { authorize } = require('../middlewear/validateToken')
+const { authenticateToken } = require('../middlewear/authMiddleware')
 const {
     getallRequestForms,
     getRequestForm,
@@ -16,14 +16,14 @@ const router = express.Router()
 router.get('/getAll', getallRequestForms)
 
 //get user form
-router.get('/getUserForm', authorize, getUserRequestForm)
+router.get('/getUserForm', authenticateToken, getUserRequestForm)
 
 //get one form using form id
 router.get('/getOne/:id', getRequestForm);
 
 
 //create
-router.post('/createForm', authorize, createRequestForm)
+router.post('/createForm', authenticateToken, createRequestForm)
 
 //Delete and adoption form
 router.delete('/:id', deleteRequestForm)

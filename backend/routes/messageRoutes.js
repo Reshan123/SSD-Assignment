@@ -1,6 +1,6 @@
 const express = require("express");
 const Message = require("../models/messagemodel");
-const { authorize } = require("../middlewear/validateToken");
+const { authenticateToken } = require("../middlewear/authMiddleware");
 
 const router = express.Router();
 const {
@@ -8,6 +8,6 @@ const {
   getMessages,
 } = require("../controllers/messageController");
 
-router.get("/:id", authorize, getMessages);
-router.post("/send/:id", authorize, sendMessage);
+router.get("/:id", authenticateToken, getMessages);
+router.post("/send/:id", authenticateToken, sendMessage);
 module.exports = router;

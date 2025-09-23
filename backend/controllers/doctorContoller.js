@@ -42,7 +42,7 @@ const createDoctor = async (req, res) => {
 }
 
 const updateDoctorDetailsFromToken = async (req, res) => {
-    const userID = req.user._id
+    const userID = req.user.id
 
     try{
         const doc = await doctor.findById(userID)
@@ -59,7 +59,7 @@ const updateDoctorDetailsFromToken = async (req, res) => {
 }
 
 const deleteDoctorDetailsFromToken = async (req, res) => {
-    const userID = req.user._id
+    const userID = req.user.id
     try{
         const userExist = await doctor.findById(userID)
         if (!userExist){
@@ -162,7 +162,7 @@ const deleteDoctorFromID = async (req, res) => {
 
 
 const verifyToken = async (req, res) => {
-    const userID = req.user._id
+    const userID = req.user.id
     
     try{
         if (!userID){
