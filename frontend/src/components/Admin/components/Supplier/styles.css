@@ -1,0 +1,203 @@
+.supplier-content{
+  margin: 50px;
+  display: flex;
+  flex-direction: column;
+}
+
+.supplier-content .pagination{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.supplier-content .supplierHeader{
+  margin: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.supplier-content .supplierHeader p{
+  font-size: 2rem;
+  font-weight: 600;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.supplier-content hr{
+  margin-bottom: 35px;
+}
+
+/* Styles for the employee table */
+.supplier-table{
+  margin-left: 180px;
+    width: 900px;
+    align-content: center;
+    margin-top: 30px;
+    background-color: #f3f3f3;
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    padding: 20px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+  
+/* Hover styles for the employee table */
+.supplier-table:hover{
+    box-shadow: 0 10px 15px rgba(0,0,0,.3);
+}
+
+.supplier-content .supplierHeader div{
+  align-self: flex-end;
+  display: flex;
+  gap: 25px;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.supplier-content .supplierHeader div button{
+  border-radius: 11px;
+  border: none;
+  color: #FFF;
+  background-color: #9453ce;
+  font-weight: 600;
+  padding: 10px 25px;
+  transition: 0.3s;
+}
+
+.supplier-content .supplierHeader div input{
+  /* border-radius: 15px; */
+  border: none;
+  border-bottom: 2px solid rgba(0,0,0,.3);
+  /* color: #FFF; */
+  /* background-color: var(--primaryPurple); */
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  padding: 6px 15px;
+  transition: 0.3s;
+}
+
+.supplier-content .supplierHeader div input:hover{
+  border-bottom: 2px solid rgba(0,0,0,.8);
+}
+
+
+
+
+
+
+
+  /* Common styles for the tables */
+.supplier-table-style{
+    margin: 0 auto;
+    border-collapse: collapse;
+    font-family: Agenda-Light, sans-serif;
+    font-weight: 100; 
+    background: #333; color: #fff;
+    text-rendering: optimizeLegibility;
+    border-radius: 5px; 
+  }
+
+  .supplier-table-style thead{
+    height: 70px;
+  }
+  
+  /* Styles for the table header */
+  .supplier-table-style thead tr th { 
+    font-weight: 600; 
+  }
+  
+  /* Styles for table header and table data */
+  .supplier-table-style thead th, .booking-table-style tbody td { 
+    padding: 10px; 
+    font-size: 16px;
+  }
+  
+  .supplier-table-style tbody td { 
+    padding: .7rem; 
+    font-size: 16px;
+    color: #444; 
+    background: #eee;
+    transition: 0.3s;
+  }
+  
+  /* Styles for alternating rows in the table body - w3school */
+  .supplier-table-style tbody tr:not(:last-child) { 
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;  
+  }
+
+   /* Styles for the view button */
+  .supplier-table-style tbody td center .supplier-update-btn{
+    width: 80px;
+    height:30px;
+    background-color: #9453ce;
+    font-size: 14px;
+    font-weight: bold;
+    border: 0;
+    color: #FFF;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  /* Hover styles for the view button */
+  .supplier-table-style tbody td center .supplier-update-btn:hover{
+    background-color: #8737ce;
+  }
+  .create-sup-btn{
+    width: 110px;
+    height:30px;
+    background-color: #9453ce;
+    font-size: 14px;
+    font-weight: bold;
+    border: 0;
+    color: #FFF;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  /* Hover styles for the view button */
+  .create-sup-btn:hover{
+    background-color: #8737ce;
+  }
+
+  /* Styles for the view button */
+  .supplier-table-style tbody td center .supplier-dlt-btn{
+    width: 80px;
+    height:30px;
+    background-color: #f10000;
+    font-size: 14px;
+    font-weight: bold;
+    border: 0;
+    margin-left: 10px;
+    color: #FFF;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  /* Hover styles for the view button */
+  .supplier-table-style tbody td center .supplier-dlt-btn:hover{
+    background-color: #bc0000;
+  }
+
+  /* Styles for the view button */
+  .update-supplier .update .update-sup-btn{
+    width: 80px;
+    height:30px;
+    background-color: #9453ce;
+    font-size: 14px;
+    font-weight: bold;
+    border: 0;
+    margin-left: 10px;
+    color: #FFF;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  /* Hover styles for the view button */
+  .update-supplier .update .update-sup-btn:hover{
+    background-color: #8737ce;
+  }
+
