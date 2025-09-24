@@ -108,3 +108,100 @@
 .signinPage .signinPageContent .signinForm .signinFormSubmitButtonWrapper button.disable{
     border: solid 2px #fff;
 }
+
+/* OAuth Section */
+.oauth-section {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.google-login-btn {
+    width: 100%;
+    padding: 20px 16px;
+    background: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    height: 30px;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.google-login-btn:hover {
+    background: #f8f8f8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.google-login-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.google-icon {
+    flex-shrink: 0;
+}
+
+.divider {
+    position: relative;
+    text-align: center;
+    margin: 2rem 0;
+    color: #fff;
+}
+
+.divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.divider span {
+    background: var(--primaryPink);
+    padding: 0 1.5rem;
+    position: relative;
+    z-index: 1;
+    font-size: 1.2rem;
+    font-weight: 500;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.error {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #ff6b6b;
+    color: #d63031;
+    padding: 15px 20px;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 500;
+    font-family: Arial, Helvetica, sans-serif;
+    backdrop-filter: blur(10px);
+}
+
+.oauth-section .google-login-btn {
+    margin-bottom: 0.5rem;
+}
+
+.google-login-btn:disabled {
+    background: rgba(255, 255, 255, 0.8);
+    color: #666;
+}
+
+.google-login-btn:focus {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}

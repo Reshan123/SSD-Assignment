@@ -15,13 +15,17 @@ const medicalRecordRoute = require("./routes/medicalRecordRoute");
 const messageRoutes = require("./routes/messageRoutes");
 const supplierRoutes = require("./routes/supplierRoutes");
 const salesRoutes = require("./routes/salesRoutes");
+const oauthRoutes = require("./routes/oauthRoutes");
 const adoptionRequestRoutes = require("./routes/adoptionRequestRoutes");
 const { app, server } = require("./socket/socket");
 const AdminModel = require("./models/adminModel");
-const bcrypt = require('bcrypt')
+const bcrypt = require("bcrypt");
+const passport = require("./config/passport");
 
 //const app = express()
 const corsAccessUrl = [process.env.FRONTEND_URL || ""];
+
+app.use(passport.initialize());
 
 const corsOptions = {
   origin: corsAccessUrl,
@@ -53,6 +57,7 @@ app.use("/api/medicalRec", medicalRecordRoute);
 app.use("/api/supplier", supplierRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/sales", salesRoutes);
+app.use("/api/oauth", oauthRoutes);
 
 app.use("/api/admin/login", async (req, res) => {
   try {
