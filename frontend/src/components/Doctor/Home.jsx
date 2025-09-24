@@ -97,7 +97,11 @@ const Home = () => {
                 allPetOwnersDispatch({type:"LOAD", payload: allPetOwnersJson})
 
                 //medicalRecord
-                const MedicalResponse = await fetch('http://localhost:4000/api/medicalRec/')
+                const MedicalResponse = await fetch('http://localhost:4000/api/medicalRec/', {
+                    headers: {
+                        'Authorization': `Bearer ${doctor.userToken}`
+                    }
+                })
                 const MedicalJson = await MedicalResponse.json()
 
                 if (MedicalResponse.ok) {

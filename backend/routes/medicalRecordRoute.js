@@ -1,4 +1,5 @@
 const express = require('express')
+const { authenticateToken, requireDoctor } = require('../middlewear/authMiddleware')
 
 const {
   getAllMedicalRecords,
@@ -12,18 +13,18 @@ const router = express.Router()
 
 
 // Route for creating a new medical record
-router.post('/', createMedicalRecord);
+router.post('/', authenticateToken, requireDoctor, createMedicalRecord);
 
 // Route for getting all medical records
-router.get('/', getAllMedicalRecords);
+router.get('/', authenticateToken, requireDoctor, getAllMedicalRecords);
 
 // Route for getting a single medical record by id
-router.get('/getMedicalRecordById/:id', getMedicalRecordById);
+router.get('/getMedicalRecordById/:id', authenticateToken, requireDoctor, getMedicalRecordById);
 
 // Route for updating a medical record
-router.put('/:id', updateMedicalRecord);
+router.put('/:id', authenticateToken, requireDoctor, updateMedicalRecord);
 
 // Route for deleting a medical record
-router.delete('/:id', deleteMedicalRecord);
+router.delete('/:id', authenticateToken, requireDoctor, deleteMedicalRecord);
 
 module.exports = router;

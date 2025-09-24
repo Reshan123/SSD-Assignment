@@ -792,10 +792,23 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { BookingContext } from '../../../../context/BookingContext';
+import { useDoctorContext } from '../../../../hooks/useDoctorContext';
 import md5 from 'crypto-js/md5';
 
 const MedicalRecordForm = () => {
+    // Helper function to decode JWT token and get doctor ID
+    const getDoctorIdFromToken = (token) => {
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload._id;
+        } catch (error) {
+            console.error('Error decoding token:', error);
+            return null;
+        }
+    };
+
     const { bookings } = useContext(BookingContext);
+    const { doctor } = useDoctorContext();
     const [doctors, setDoctors] = useState([]);
     const [selectedBooking, setSelectedBooking] = useState('');
     const [loading, setLoading] = useState(false);
@@ -880,6 +893,7 @@ const MedicalRecordForm = () => {
         }
 
         const record = {
+            vetID: getDoctorIdFromToken(doctor.userToken), // Decode the token to get doctor's ID
             vetName,
             bookingID: selectedBooking,
             date,
@@ -900,7 +914,8 @@ const MedicalRecordForm = () => {
                 method: 'POST',
                 body: JSON.stringify(record),
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${doctor.userToken}`
                 }
             });
 

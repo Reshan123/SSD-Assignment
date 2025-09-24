@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useMedicalRecordContext } from '../../../../hooks/useMedicalRecordContext';
+import { useDoctorContext } from '../../../../hooks/useDoctorContext';
 import { useNavigate } from 'react-router-dom';
 import './styles.css';
 import MedicalCard from './MedicalCard';
@@ -11,6 +12,7 @@ import QRCode from 'qrcode';
 
 const MedicalRecord = () => {
   const { medicalRec, dispatch: medicalDispatch } = useMedicalRecordContext();
+  const { doctor } = useDoctorContext();
   const [selectedMedicalRec, setSelectedMR] = useState(null);
   const [buttonPopup, setButtonPopup] = useState(false);
   const [currentlyDisplayedItems, setCurrentlyDisplayedItems] = useState([]);
@@ -93,7 +95,10 @@ const MedicalRecord = () => {
 
   const handleDelete = async (id) => {
     const response = await fetch('http://localhost:4000/api/medicalRec/' + id, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${doctor.userToken}`
+      }
     });
     if (response.ok) {
       const json = await response.json();

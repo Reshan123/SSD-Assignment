@@ -1,7 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { BookingContext } from '../../../../context/BookingContext';
+import { useDoctorContext } from '../../../../hooks/useDoctorContext';
 
 const MedicalRecordForm = () => {
+    // Helper function to decode JWT token and get doctor ID
+    const getDoctorIdFromToken = (token) => {
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload._id;
+        } catch (error) {
+            console.error('Error decoding token:', error);
+            return null;
+        }
+    };
+
     // const [vetID, setVetID] = useState('');
     // const [vetName, setVetName] = useState('');
     // const [bookingID, setBookingID ] = useState('');
@@ -36,6 +48,7 @@ const MedicalRecordForm = () => {
     const [surgicalHistory, setSurgicalHistory] = useState('');
     const [doctors, setDoctors] = useState([]);
     const { bookings } = useContext(BookingContext);
+    const { doctor } = useDoctorContext();
     const [selectedBooking, setSelectedBooking] = useState('');
     const [loading, setLoading] = useState(false);
     const [formSubmitted, setFormSubmitted] = useState(false);
@@ -109,7 +122,11 @@ const MedicalRecordForm = () => {
             setLoading(true);
 
             try {
-                const response = await fetch(`http://localhost:4000/api/booking/${selectedBookingId}`);
+                const response = await fetch(`http://localhost:4000/api/bookings/${selectedBookingId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${doctor.userToken}`
+                    }
+                });
                 const data = await response.json();
                 setSpecies(data.species);
                 setLoading(false);
@@ -125,15 +142,15 @@ const MedicalRecordForm = () => {
         setFormSubmitted(true);
 
 
-        // Check for validation errors
-        if ( !vetName || !date || !petName || !species || !gender || !dob || !vaccination || !nextVaccination || !remarks || !symptoms || !allergies || !surgicalHistory) {
-            setValidationError('All fields are required.');
+        // Check for validation errors (only check required fields that match backend validation)
+        if (!vetName || !selectedBooking || !date || !petName || !species || !gender || !dob || !vaccination || !nextVaccination) {
+            setValidationError('Please fill in all required fields: Vet Name, Booking ID, Date, Pet Name, Species, Gender, Date of Birth, Vaccination, and Next Vaccination.');
             return;
         }
 
 
         const record = {
-            // vetID,
+            vetID: getDoctorIdFromToken(doctor.userToken), // Decode the token to get doctor's ID
             vetName,
             bookingID: selectedBooking,
             date,
@@ -162,7 +179,8 @@ const MedicalRecordForm = () => {
                 method: 'POST',
                 body: JSON.stringify(record),
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${doctor.userToken}`
                 }
             });
 
@@ -229,7 +247,7 @@ const MedicalRecordForm = () => {
                 ))}
             </select> */}
 
-            <label>Vet Name</label>
+            <label>Vet Name *</label>
             <select
                 value={vetName}
                 onChange={(e) => setVetName(e.target.value)}
@@ -273,7 +291,7 @@ const MedicalRecordForm = () => {
                 ))}
             </select> */}
 
-            <label>Booking ID</label>
+            <label>Booking ID *</label>
             {bookings && bookings.length > 0 && (
                 <select
                     value={selectedBooking}
@@ -290,19 +308,21 @@ const MedicalRecordForm = () => {
 
 
 
-            <label>Date</label>
+            <label>Date *</label>
             <input
                 type="Date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
+                required
             />
 
 
-            <label>Pet Name</label>
+            <label>Pet Name *</label>
             <input
                 type="text"
                 value={petName}
                 onChange={(e) => setPetName(e.target.value)}
+                required
             />
 
 
@@ -329,7 +349,7 @@ const MedicalRecordForm = () => {
 
             /> */}
 
-            <label>Species</label>
+            <label>Species *</label>
             <select
                 value={species}
                 onChange={(e) => setSpecies(e.target.value)}
@@ -349,7 +369,7 @@ const MedicalRecordForm = () => {
                 onChange={(e) => setGender(e.target.value)}
             /> */}
 
-            <label>Gender</label>
+            <label>Gender *</label>
             <select
                 value={gender}
                 onChange={(e) => setGender(e.target.value)}
@@ -360,23 +380,26 @@ const MedicalRecordForm = () => {
                 <option value="Female">Female</option>
             </select>
 
-            <label>Date of Birth</label>
+            <label>Date of Birth *</label>
             <input
                 type="Date"
                 value={dob}
                 onChange={(e) => setDob(e.target.value)}
+                required
             />
-            <label>Vaccination</label>
+            <label>Vaccination *</label>
             <input
                 type="text"
                 value={vaccination}
                 onChange={(e) => setVaccination(e.target.value)}
+                required
             />
-            <label>Next Vaccination</label>
+            <label>Next Vaccination *</label>
             <input
                 type="Date"
                 value={nextVaccination}
                 onChange={(e) => setNextVaccination(e.target.value)}
+                required
             />
             <label>Remarks</label>
             <input

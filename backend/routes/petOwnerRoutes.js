@@ -21,7 +21,7 @@ petOwnerRouter.get('/getAllUsers', petOwnerController.getAllUsers)
 //verify token route to check if the token is valid and the user is a pet owner
 petOwnerRouter.get('/verifyToken', authenticateToken, petOwnerController.verifyToken)
 
-//
+//delete route protected and only accessible to authenticated admins using user ID
 petOwnerRouter.delete('/deleteUserFromUserID/:userID', authenticateToken, requireAdmin, petOwnerController.deleteUserFromUserID)
 
 module.exports = petOwnerRouter
