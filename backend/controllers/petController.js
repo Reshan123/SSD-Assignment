@@ -112,11 +112,29 @@ const getOneOwnerPets = async (req, res) => {
 
 const deletePetFromID = async (req, res) => {
     const { petID } = req.params
+    
+    // Check if user is authenticated
+    if (!req.user) {
+        return res.status(401).json({message: 'Authentication required'})
+    }
+    
+    const userID = req.user.id
+    const userRole = req.user.role
 
     try{
+        // Validate pet ID format
+        if (!mongoose.Types.ObjectId.isValid(petID)) {
+            return res.status(400).json({message: 'Invalid pet ID format'})
+        }
+
         const petExist = await pet.findById(petID)
         if(!petExist){
-            throw Error("Invalid ID")
+            throw Error("Pet not found")
+        }
+
+        // Authorization check - only owner or admin can delete
+        if (userRole !== 'admin' && petExist.ownerID.toString() !== userID) {
+            return res.status(403).json({message: 'Access denied. You can only delete your own pets.'})
         }
 
         const response = await pet.findByIdAndDelete(petID)
@@ -129,43 +147,81 @@ const deletePetFromID = async (req, res) => {
 
 const updatePetFromID = async (req, res) => {
     const { petID } = req.params
-    const {ownerID, petName,petAge,petSpecies,petGender,petBreed} = req.body
+    
+    // Check if user is authenticated
+    if (!req.user) {
+        return res.status(401).json({message: 'Authentication required'})
+    }
+    
+    const userID = req.user.id
+    const userRole = req.user.role
+    const {ownerID, petName, petAge, petSpecies, petGender, petBreed} = req.body
     const options = {
-        new: true
+        new: true,
+        runValidators: true
     }
     
     try{
-        const { files } = req;
-        console.log(files)
-        const filenames = files.map(file => (file.filename))
-        const petExist = await pet.findById(petID)
-        if(!petExist){
-            throw Error("Invalid ID")
+        // Validate pet ID format
+        if (!mongoose.Types.ObjectId.isValid(petID)) {
+            return res.status(400).json({message: 'Invalid pet ID format'})
         }
 
-        if (!ownerID || !petName || !petAge || !petSpecies || !petGender || !petBreed) {
+        const { files } = req;
+        console.log(files)
+        const filenames = files ? files.map(file => (file.filename)) : []
+        const petExist = await pet.findById(petID)
+        if(!petExist){
+            throw Error("Pet not found")
+        }
+
+        // Authorization check - only owner or doctor can update it
+        if (userRole !== 'doctor' && petExist.ownerID.toString() !== userID) {
+            return res.status(403).json({message: 'Access denied. You can only update your own pets.'})
+        }
+
+        // Sanitize input - define allowed fields for updates
+        const allowedUpdates = ['petName', 'petAge', 'petSpecies', 'petGender', 'petBreed'];
+        const sanitizedUpdates = {};
+        
+        // Only allow updates to specific fields
+        for (const key of allowedUpdates) {
+            if (req.body[key] !== undefined) {
+                sanitizedUpdates[key] = req.body[key];
+            }
+        }
+
+        // Prevent ownerID from being changed unless doctor
+        if (userRole === 'doctor' && ownerID) {
+            sanitizedUpdates.ownerID = ownerID;
+        }
+
+        // Validate required fields
+        if (!sanitizedUpdates.petName || !sanitizedUpdates.petAge || !sanitizedUpdates.petSpecies || 
+            !sanitizedUpdates.petGender || !sanitizedUpdates.petBreed) {
             throw Error('All fields must be filled')
         }
-        if(!validator.isAlpha(petName, ['en-US'], {ignore: '-s'})){
+
+        // Validate field formats
+        if(!validator.isAlpha(sanitizedUpdates.petName, ['en-US'], {ignore: '-s'})){
             throw Error('Pet name can only have letters')
         }
-        if(!validator.isAlpha(petSpecies, ['en-US'], {ignore: '-s'})){
+        if(!validator.isAlpha(sanitizedUpdates.petSpecies, ['en-US'], {ignore: '-s'})){
             throw Error('pet species can only have letters')
         }
-        if(!validator.isAlpha(petGender, ['en-US'], {ignore: '-s'})){
+        if(!validator.isAlpha(sanitizedUpdates.petGender, ['en-US'], {ignore: '-s'})){
             throw Error('Pet gender can only have letters')
         }
-        if(!validator.isAlpha(petBreed, ['en-US'], {ignore: '-s'})){
+        if(!validator.isAlpha(sanitizedUpdates.petBreed, ['en-US'], {ignore: '-s'})){
             throw Error('Pet breed can only have letters')
         }
 
+        // Handle image updates
         if(filenames.length > 0){
-            const response = await pet.findByIdAndUpdate(petID, {...req.body, petImage:[...filenames]}, options)
-            res.status(200).json({message: response})
-            return;    
+            sanitizedUpdates.petImage = [...filenames];
         }
 
-        const response = await pet.findByIdAndUpdate(petID, {...req.body}, options)
+        const response = await pet.findByIdAndUpdate(petID, sanitizedUpdates, options)
         res.status(200).json({message: response})
 
     } catch(error){

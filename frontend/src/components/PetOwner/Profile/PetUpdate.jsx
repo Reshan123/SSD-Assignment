@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from 'react-router-dom'
 import { usePetContext } from "../../../hooks/usePetContext";
+import { useUserContext } from "../../../hooks/userContextHook";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import './styles.css'
 
@@ -11,6 +12,7 @@ const PetUpdate = ({ navBarProps }) => {
     const { id } = useParams()
 
     const {pets, dispatch} = usePetContext()
+    const {user} = useUserContext()
     const navigate = useNavigate()
 
     const [formInputs, setFormInputs] = useState({
@@ -65,6 +67,9 @@ const PetUpdate = ({ navBarProps }) => {
         try{
             const config = {
                 method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${user.userToken}`
+                },
                 body: data
             }
             const response = await fetch("http://localhost:4000/api/pet/updatePetFromID/" + id, config);

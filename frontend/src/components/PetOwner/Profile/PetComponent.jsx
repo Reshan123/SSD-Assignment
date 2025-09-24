@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { usePetContext } from '../../../hooks/usePetContext';
+import { useUserContext } from '../../../hooks/userContextHook';
 import { useEffect } from "react";
 
 
@@ -7,6 +8,7 @@ const PetComponent = ({pet}) => {
 
     const navigate = useNavigate()
     const { pets, dispatch: petDispatch } = usePetContext()
+    const { user } = useUserContext()
 
 
     const deletePet = async (petId) => {
@@ -15,7 +17,10 @@ const PetComponent = ({pet}) => {
         if (deleteApproval) {
             try {
                 const config = {
-                    method: 'DELETE'
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${user.userToken}`
+                    }
                 }
                 const response = await fetch("http://localhost:4000/api/pet/deletePetFromID/" + petId, config)
                 const json = await response.json()

@@ -1,5 +1,6 @@
 import { useAllPetOwnerContext } from '../../../../hooks/useAllPetOwnerContext'
 import { useAllPetsContext } from "../../../../hooks/useAllPetsContext";
+import { useDoctorContext } from "../../../../hooks/useDoctorContext";
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -9,6 +10,7 @@ const UpdatePet = () => {
     const { petID } = useParams()
     const {petOwners, dispatch: allPetOwnersDispatch} = useAllPetOwnerContext() 
     const {pets, dispatch:allPetsDispatch} = useAllPetsContext()
+    const {doctor} = useDoctorContext()
     const [petDetails, setPetDetails] = useState({})
     const [error, setError] = useState('')
     const [formInput, setFormInput] = useState({
@@ -47,11 +49,24 @@ const UpdatePet = () => {
     const handleFormSubmit = async (e) => {
         e.preventDefault();
 
+        // Create FormData instead of sending JSON
+        const formData = new FormData();
+        formData.append('ownerID', formInput.ownerID);
+        formData.append('petName', formInput.petName);
+        formData.append('petAge', formInput.petAge);
+        formData.append('petSpecies', formInput.petSpecies);
+        formData.append('petGender', formInput.petGender);
+        formData.append('petBreed', formInput.petBreed);
+        // Note: No files are being uploaded in this form
+
         try{
             const response = await fetch(`http://localhost:4000/api/pet/updatePetFromID/${petID}`, {
                 method: 'PUT',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(formInput)
+                headers: {
+                    'Authorization': `Bearer ${doctor.userToken}`
+                    // Don't set Content-Type header - let browser set it for FormData
+                },
+                body: formData
             })
             const json = await response.json()
         

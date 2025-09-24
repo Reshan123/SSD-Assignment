@@ -1,5 +1,6 @@
 import { useAllPetOwnerContext } from '../../../../hooks/useAllPetOwnerContext'
 import { useAllPetsContext } from "../../../../hooks/useAllPetsContext";
+import { useDoctorContext } from "../../../../hooks/useDoctorContext";
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router';
 import { jsPDF } from 'jspdf';
@@ -12,7 +13,8 @@ const AllPets = () => {
     const [searchQuery, setSearchQuery] = useState("")
     const [currentlyDisplayedItem, setCurrentlyDisplayedItems] = useState([])
     const {pets, dispatch} = useAllPetsContext()
-    const {petOwners, dispatch: allPetOwnersDispatch} = useAllPetOwnerContext() 
+    const {petOwners, dispatch: allPetOwnersDispatch} = useAllPetOwnerContext()
+    const {doctor} = useDoctorContext() 
 
     useEffect(() => {
         setCurrentlyDisplayedItems(pets)
@@ -40,6 +42,9 @@ const AllPets = () => {
             try {
                 const config = {
                     method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${doctor.userToken}`
+                    }
                 }
                 const response = await fetch(`http://localhost:4000/api/pet/deletePetFromID/${petID}`, config);
                 const json = await response.json()

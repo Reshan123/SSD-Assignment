@@ -27,7 +27,7 @@ petRouter.get("/getOneOwnerPets", authenticateToken, getOneOwnerPets)
 petRouter.post("/createPet", authenticateToken, upload.array('petImage', 5), createPet)
 petRouter.post("/adminCreatePet", authenticateToken, requireAdmin, upload.array('petImage', 5), adminCreatePet)
 
-petRouter.delete("/deletePetFromID/:petID", deletePetFromID)
-petRouter.put("/updatePetFromID/:petID", upload.array('petImage', 5), updatePetFromID)
+petRouter.delete("/deletePetFromID/:petID", authenticateToken, deletePetFromID)
+petRouter.put("/updatePetFromID/:petID", authenticateToken, upload.array('petImage', 5), updatePetFromID)
 
 module.exports = petRouter
