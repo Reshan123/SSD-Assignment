@@ -104,21 +104,57 @@ const updateMedicalRecord = async (request, response) => {
   try {
     // Extract the id from request parameters
     const { id } = request.params;
-
-    // Update the Medical Record by id with the data from request body
-    const result = await MedicalRecord.findByIdAndUpdate(id, request.body);
-
-    // If Medical Record is not found, send 404 response
-    if (!result) {
+    
+    // Check if user is authenticated
+    if (!request.user) {
+      return response.status(401).json({ message: 'Authentication required' });
+    }
+    
+    const userID = request.user.id;
+    const userRole = request.user.role;
+    
+    // Validate medical record ID format
+    if (!require('mongoose').Types.ObjectId.isValid(id)) {
+      return response.status(400).json({ message: 'Invalid medical record ID format' });
+    }
+    
+    // Find the medical record first to check ownership
+    const existingRecord = await MedicalRecord.findById(id);
+    
+    if (!existingRecord) {
       return response.status(404).json({ message: 'Medical record not found' });
     }
+    
+    // Authorization check - only the creating doctor or admin can update
+    if (userRole !== 'doctor' && existingRecord.vetID !== userID) {
+      return response.status(403).json({ message: 'Access denied. You can only update medical records you created.' });
+    }
+    
+    // Sanitize input - define allowed fields for updates
+    const allowedUpdates = ['vetName', 'date', 'petName', 'species', 'other', 'gender', 'dob', 'vaccination', 'nextVaccination', 'remarks', 'symptoms', 'allergies', 'surgicalHistory'];
+    const sanitizedUpdates = {};
+    
+    for (const key of allowedUpdates) {
+      if (request.body[key] !== undefined) {
+        sanitizedUpdates[key] = request.body[key];
+      }
+    }
+    
+    // Prevent changing vetID and bookingID unless admin
+    if (userRole === 'admin') {
+      if (request.body.vetID) sanitizedUpdates.vetID = request.body.vetID;
+      if (request.body.bookingID) sanitizedUpdates.bookingID = request.body.bookingID;
+    }
+
+    // Update the Medical Record by id with sanitized data
+    const result = await MedicalRecord.findByIdAndUpdate(id, sanitizedUpdates, { new: true, runValidators: true });
 
     // Send success response
-    return response.status(200).send({ message: 'Medical record updated successfully' });
+    return response.status(200).json({ message: 'Medical record updated successfully', record: result });
   } catch (error) {
     // Handle any errors and send appropriate response
-    console.log(error.message);
-    response.status(500).send({ message: error.message });
+    console.error('Medical record update error:', error);
+    response.status(500).send({ message: 'Failed to update medical record' });
   }
 };
 
@@ -127,21 +163,41 @@ const deleteMedicalRecord = async (request, response) => {
   try {
     // Extract the id from request parameters
     const { id } = request.params;
+    
+    // Check if user is authenticated
+    if (!request.user) {
+      return response.status(401).json({ message: 'Authentication required' });
+    }
+    
+    const userID = request.user.id;
+    const userRole = request.user.role;
+    
+    // Validate medical record ID format
+    if (!require('mongoose').Types.ObjectId.isValid(id)) {
+      return response.status(400).json({ message: 'Invalid medical record ID format' });
+    }
+    
+    // Find the medical record first to check ownership
+    const existingRecord = await MedicalRecord.findById(id);
+    
+    if (!existingRecord) {
+      return response.status(404).json({ message: 'Medical record not found' });
+    }
+    
+    // Authorization check - only the creating doctor or admin can delete
+    if (userRole !== 'admin' && existingRecord.vetID !== userID) {
+      return response.status(403).json({ message: 'Access denied. You can only delete medical records you created.' });
+    }
 
     // Delete the Medical Record by id from the database
     const result = await MedicalRecord.findByIdAndDelete(id);
-
-    // If Medical Record is not found, send 404 response
-    if (!result) {
-      return response.status(404).json({ message: 'Medical record not found' });
-    }
 
     // Send success response
     return response.status(200).send({ message: 'Medical record deleted successfully' });
   } catch (error) {
     // Handle any errors and send appropriate response
-    console.log(error.message);
-    response.status(500).send({ message: error.message });
+    console.error('Medical record deletion error:', error);
+    response.status(500).send({ message: 'Failed to delete medical record' });
   }
 };
 
