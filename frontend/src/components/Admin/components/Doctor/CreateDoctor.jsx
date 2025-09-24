@@ -24,9 +24,13 @@ const CreateDoctor = () => {
     const handleFormSubmit = async (e) => {
         e.preventDefault();
         try {
+            const adminUser = JSON.parse(localStorage.getItem('adminUser'));
             const response = await fetch('http://localhost:4000/api/doctor/createDoctor', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${adminUser.userToken}`
+                },
                 body: JSON.stringify(formInput)
             })
             const json = await response.json()

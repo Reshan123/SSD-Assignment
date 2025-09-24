@@ -44,11 +44,13 @@ const UpdateDoctor = () => {
     const handleFormSubmit = async (e) => {
         e.preventDefault()
         try {
+            const adminUser = JSON.parse(localStorage.getItem('adminUser'));
             if (formInput.password){
                 const config = {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${adminUser.userToken}`
                     },
                     body: JSON.stringify(formInput)
                 }
@@ -69,6 +71,7 @@ const UpdateDoctor = () => {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${adminUser.userToken}`
                     },
                     body: JSON.stringify(formInput)
                 }

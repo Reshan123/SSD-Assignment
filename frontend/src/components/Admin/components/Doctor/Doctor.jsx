@@ -31,9 +31,12 @@ const Doctor = () => {
         const confirmed = confirm("Are You Sure?")
         if (confirmed) {
             try {
-
+                const adminUser = JSON.parse(localStorage.getItem('adminUser'));
                 const config = {
                     method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${adminUser.userToken}`
+                    }
                 }
                 const response = await fetch(`http://localhost:4000/api/doctor/deleteDoctorFromID/${docID}`, config);
                 const json = await response.json()
