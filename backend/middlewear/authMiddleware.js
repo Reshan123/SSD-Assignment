@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const PetOwner = require('../models/petOwnerModel');
 const Doctor = require('../models/doctorModel');
+const AdminModel = require('../models/adminModel');
 
 const authenticateToken = async (req, res, next) => {
     try {
@@ -14,17 +15,11 @@ const authenticateToken = async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.SECRET);
         
         if (decoded.role) {
+            let user;
             if (decoded.role === 'admin') {
-                req.user = { 
-                    id: decoded._id, 
-                    email: decoded.email, 
-                    name: 'John Admin',
-                    role: 'admin' 
-                };
-                return next();
+                user = await AdminModel.findById(decoded._id);
             }
             
-            let user;
             if (decoded.role === 'doctor') {
                 user = await Doctor.findById(decoded._id);
             } else if (decoded.role === 'petOwner') {
@@ -67,6 +62,7 @@ const authenticateToken = async (req, res, next) => {
         };
         next();
     } catch (error) {
+        console.error('Token authentication error:', error);
         return res.status(403).json({ error: 'Invalid or expired token' });
     }
 };
