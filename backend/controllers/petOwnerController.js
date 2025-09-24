@@ -143,20 +143,35 @@ const deleteUserDetailsFromToken = async (req, res) => {
 
 const deleteUserFromUserID = async (req, res) => {
     const { userID } = req.params
+    
+    // Check if user is authenticated 
+    if (!req.user) {
+        return res.status(401).json({message: 'Authentication required'})
+    }
+    
+    // Check if user has admin role 
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({message: 'Admin access required'})
+    }
 
     try{
+        // Validate user ID format
+        if (!require('mongoose').Types.ObjectId.isValid(userID)) {
+            return res.status(400).json({message: 'Invalid user ID format'})
+        }
     
         const userExist = await petOwner.findById(userID)
         
         if(!userExist){
-            throw Error("Invalid ID")
+            return res.status(404).json({message: "User not found"})
         }
 
         const response = await petOwner.findByIdAndDelete(userID)
-        res.status(200).json({message: "User Deleted"})
+        res.status(200).json({message: "User deleted successfully"})
 
     } catch (error){
-        res.status(400).json({message: error.message})
+        console.error('User deletion error:', error)
+        res.status(500).json({message: 'Failed to delete user'})
     }
 
 }
