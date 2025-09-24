@@ -2,7 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const { authorize } = require("./middlewear/validateToken");
+const secureLogger = require("./utils/secureLogger"); 
+const errorHandler = require("./middlewear/errorHandler"); 
 
 const petOwnerRoutes = require("./routes/petOwnerRoutes");
 const inventoryItemRoutes = require("./routes/inventoryitemsRoutes");
@@ -61,13 +62,37 @@ app.use("/api/sales", salesRoutes);
 app.use("/api/oauth", oauthRoutes);
 app.use("/api/admin", adminRoutes);
 
+// Replace any console.log statements with secure logger
+const PORT = process.env.PORT || 4000;
+
+// Database connection with secure logging
 mongoose
-  .connect(process.env.MONGOOSE_URI)
+  .connect(process.env.MONGOOSE_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
-    const PORT = server.listen(process.env.PORT, () => {
-      console.log("Connected to db listening on ", process.env.PORT);
+    secureLogger.info("Database connected successfully", {
+      component: "server",
+      action: "database_connection",
     });
   })
   .catch((error) => {
-    console.log(error);
+    secureLogger.error("Database connection failed", {
+      component: "server",
+      action: "database_connection",
+      error: error.message,
+    });
   });
+
+// Error handling middleware (should be last)
+app.use(errorHandler);
+
+app.listen(PORT, () => {
+  secureLogger.info("Server started successfully", {
+    component: "server",
+    action: "server_start",
+    port: PORT,
+    environment: process.env.NODE_ENV || "development",
+  });
+});
