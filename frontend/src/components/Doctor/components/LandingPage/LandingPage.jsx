@@ -24,7 +24,11 @@ const LandingPage = () => {
         const fetchEvents = async () => {
 
             try {
-                const response = await fetch(`http://localhost:4000/api/bookings/getDoctorBookings/${doctor && doctor.username}`);
+                const response = await fetch(`http://localhost:4000/api/bookings/getDoctorBookings/${doctor && doctor.username}`, {
+                    headers: {
+                        'Authorization': `Bearer ${doctor.userToken}`
+                    }
+                });
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch events');

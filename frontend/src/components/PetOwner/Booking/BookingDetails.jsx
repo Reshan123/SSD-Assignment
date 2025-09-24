@@ -1,5 +1,6 @@
 import React from 'react'
 import { useBookingContext } from '../../../hooks/useBookingContext'
+import { useUserContext } from '../../../hooks/userContextHook'
 import { Link, useNavigate } from 'react-router-dom'
 
 const BookingDetails = ({booking}) => {
@@ -7,10 +8,14 @@ const BookingDetails = ({booking}) => {
   const navigate = useNavigate()
   
   const {dispatch} = useBookingContext()
+  const { user } = useUserContext()
 
   const handleDelete = async() => {
       const response = await fetch('http://localhost:4000/api/bookings/' + booking._id, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${user.userToken}`
+        }
       })
 
       const json = await response.json()

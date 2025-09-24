@@ -9,6 +9,7 @@ import { usePetContext } from '../../../hooks/usePetContext'
 const UpdateBooking = ({ navBarProps }) => {
 
     const navigate = useNavigate()
+    const { user } = useUserContext()
 
     navBarProps("#B799D1", "#FFF")
 
@@ -38,7 +39,11 @@ const UpdateBooking = ({ navBarProps }) => {
 
     const fetchBooking = async() => {
       try {
-        const response = await fetch('http://localhost:4000/api/bookings/getBooking/' + id);
+        const response = await fetch('http://localhost:4000/api/bookings/getBooking/' + id, {
+          headers: {
+            'Authorization': `Bearer ${user.userToken}`
+          }
+        });
         const json = await response.json();
 
         if (response.ok) {
@@ -73,7 +78,8 @@ const UpdateBooking = ({ navBarProps }) => {
             method: 'PATCH',
             body: JSON.stringify(booking),
             headers: {
-                'Content-Type':'application/json'
+                'Content-Type':'application/json',
+                'Authorization': `Bearer ${user.userToken}`
             }
     })
 

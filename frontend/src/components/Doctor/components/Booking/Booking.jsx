@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { useBookingContext } from '../../../../hooks/useBookingContext';
+import { useDoctorContext } from '../../../../hooks/useDoctorContext';
 import { useNavigate } from 'react-router-dom';
 import { jsPDF } from 'jspdf';
 import ViewPopup from './ViewPopup';
@@ -10,6 +11,7 @@ import { Select } from 'antd';
 export const Booking = () => {
 
   const { bookings, dispatch: bookingDispatch } = useBookingContext();
+  const { doctor } = useDoctorContext();
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [buttonPopup, setButtonPopup] = useState(false);
 
@@ -76,7 +78,10 @@ export const Booking = () => {
 
   const handleDelete = async(id) => {
     const response = await fetch('http://localhost:4000/api/bookings/' + id, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${doctor.userToken}`
+        }
       })
 
       const json = await response.json()
@@ -200,7 +205,8 @@ const generatePDF = () => {
       const response = await fetch(`http://localhost:4000/api/bookings/${id}`, {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${doctor.userToken}`
         },
         body: JSON.stringify({ status })
       });

@@ -28,7 +28,12 @@ const BookingUpdate = () => {
 
     const fetchBooking = async() => {
       try {
-        const response = await fetch('http://localhost:4000/api/bookings/getBooking/' + id);
+        const adminUser = JSON.parse(localStorage.getItem('adminUser'));
+        const response = await fetch('http://localhost:4000/api/bookings/getBooking/' + id, {
+          headers: {
+            'Authorization': `Bearer ${adminUser.userToken}`
+          }
+        });
         const json = await response.json();
 
         if (response.ok) {
@@ -77,11 +82,13 @@ const BookingUpdate = () => {
 
     const booking = {owner_id,owner_name,owner_email,owner_contact,pet_name,pet_species,pet_breed,doctor,start_time,description}
 
+    const adminUser = JSON.parse(localStorage.getItem('adminUser'));
     const response = await fetch('http://localhost:4000/api/bookings/' + id , {
             method: 'PATCH',
             body: JSON.stringify(booking),
             headers: {
-                'Content-Type':'application/json'
+                'Content-Type':'application/json',
+                'Authorization': `Bearer ${adminUser.userToken}`
             }
     })
 

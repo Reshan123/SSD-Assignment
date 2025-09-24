@@ -45,7 +45,7 @@ const Home = ({ navBarProps }) => {
                 const config = {
                     method: 'GET',
                     headers: {
-                        'authorization': `Bearer ${user.userToken}`
+                        'Authorization': `Bearer ${user.userToken}`
                     }
                 }
                 const response = await fetch('http://localhost:4000/api/petOwner/verifyToken', config)
@@ -67,7 +67,7 @@ const Home = ({ navBarProps }) => {
 
             const config = {
                 headers: {
-                    'authorization': `Bearer ${user.userToken}`
+                    'Authorization': `Bearer ${user.userToken}`
                 }
             }
 
@@ -126,7 +126,7 @@ const Home = ({ navBarProps }) => {
                 body: JSON.stringify(booking),
                 headers: {
                     'Content-Type':'application/json',
-                    "authorization": `Bearer ${user.userToken}`
+                    'Authorization': `Bearer ${user.userToken}`
                 }
             });
     

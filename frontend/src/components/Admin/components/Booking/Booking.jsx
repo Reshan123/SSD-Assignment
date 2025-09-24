@@ -78,8 +78,12 @@ const Booking = () => {
   };
 
   const handleDelete = async(id) => {
+    const adminUser = JSON.parse(localStorage.getItem('adminUser'));
     const response = await fetch('http://localhost:4000/api/bookings/' + id, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${adminUser.userToken}`
+        }
       })
 
       const json = await response.json()
@@ -200,10 +204,12 @@ const generatePDF = () => {
   //update status function
   const handleStatusUpdate = async (id, status) => {
     try {
+      const adminUser = JSON.parse(localStorage.getItem('adminUser'));
       const response = await fetch(`http://localhost:4000/api/bookings/${id}`, {
         method: 'PATCH',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${adminUser.userToken}`
         },
         body: JSON.stringify({ status })
       });
