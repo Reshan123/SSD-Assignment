@@ -20,9 +20,10 @@ const adoptionRequestRoutes = require('./routes/adoptionRequestRoutes')
 const { app, server } = require("./socket/socket");
 
 //const app = express()
+const corsAccessUrl = [process.env.FRONTEND_URL || ""]
 
 const corsOptions = {
-    origin: '*',
+    origin: corsAccessUrl,
     credentials: true,
     optionSuccessStatus: 200,
 }
