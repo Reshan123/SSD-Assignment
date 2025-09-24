@@ -20,13 +20,27 @@ import App from './App.jsx'
 import firebase from "firebase/compat/app"
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCdLhIFPlvnkqJiQASjo3TK14TnGlkNwkk",
-  authDomain: "test-6ab3a.firebaseapp.com",
-  projectId: "test-6ab3a",
-  storageBucket: "test-6ab3a.appspot.com",
-  messagingSenderId: "920039713792",
-  appId: "1:920039713792:web:f979ecedb627ec1e613ce5"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
+
+// Validate that all required environment variables
+const requiredEnvVars = [
+  'VITE_FIREBASE_API_KEY',
+  'VITE_FIREBASE_AUTH_DOMAIN',
+  'VITE_FIREBASE_PROJECT_ID',
+  'VITE_FIREBASE_STORAGE_BUCKET'
+];
+
+for (const envVar of requiredEnvVars) {
+  if (!import.meta.env[envVar]) {
+    throw new Error(`Missing required environment variable: ${envVar}`);
+  }
+}
 
 firebase.initializeApp(firebaseConfig)
 
