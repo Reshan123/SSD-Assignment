@@ -9,12 +9,6 @@ const Login = () => {
 
     const navigate = useNavigate()
 
-    useEffect(() => {
-        if(localStorage.getItem('adminUser')){
-            navigate('/admin/home')
-        }
-    }, [localStorage.getItem('adminUser')])
-
     const handleFormSubmit = async (e) => {
         e.preventDefault()
         const config = {
@@ -46,9 +40,9 @@ const Login = () => {
     return ( 
         <div className="adminLoginPage" onSubmit={handleFormSubmit}>
             <div className="adminLoginPageContent">
-                <dov className="adminLoginPageHeader">
+                <div className="adminLoginPageHeader">
                     <div className="adminLoginPageTitle">Admin Login Page</div>
-                </dov>
+                </div>
                 {error && (<div className="error">{error}</div>)}
                 <form className="adminLoginForm">
                     <div className="adminLoginInputWrapper">
