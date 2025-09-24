@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useAllPetOwnerContext } from "../../../../hooks/useAllPetOwnerContext";
+import { useNavigate } from "react-router-dom";
 import './styles.css'
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 
 const PetOwners = () => {
 
+    const navigate = useNavigate()
     const { petOwners, dispatch: petOwnerDispatch } = useAllPetOwnerContext()
     const [currentlyDisplayedItem, setCurrentlyDisplayedItems] = useState([])
     const [searchQuery, setSearchQuery] = useState("")
@@ -28,8 +30,12 @@ const PetOwners = () => {
         const confimred = confirm("Are you sure?")
         if (confimred) {
             try {
+                const adminUser = JSON.parse(localStorage.getItem('adminUser'));
                 const config = {
                     method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${adminUser.userToken}`
+                    }
                 }
                 const response = await fetch(`http://localhost:4000/api/petOwner/deleteUserFromUserID/${userID}`, config);
                 const json = await response.json()

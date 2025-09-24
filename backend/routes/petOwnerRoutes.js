@@ -1,5 +1,5 @@
 const express = require('express')
-const { authenticateToken } = require('../middlewear/authMiddleware')
+const { authenticateToken, requireAdmin } = require('../middlewear/authMiddleware')
 //controller imports
 const petOwnerController = require('../controllers/petOwnerController')
 
@@ -21,6 +21,7 @@ petOwnerRouter.get('/getAllUsers', petOwnerController.getAllUsers)
 //verify token route to check if the token is valid and the user is a pet owner
 petOwnerRouter.get('/verifyToken', authenticateToken, petOwnerController.verifyToken)
 
-petOwnerRouter.delete('/deleteUserFromUserID/:userID',  petOwnerController.deleteUserFromUserID)
+//
+petOwnerRouter.delete('/deleteUserFromUserID/:userID', authenticateToken, requireAdmin, petOwnerController.deleteUserFromUserID)
 
 module.exports = petOwnerRouter
