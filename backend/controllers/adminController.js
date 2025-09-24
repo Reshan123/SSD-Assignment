@@ -1,10 +1,10 @@
 const AdminModel = require("../models/adminModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const login = async (req, res) => {
   try {
-    const jwt = require("jsonwebtoken");
     const { email, password } = req.body;
 
     if (!email || !password) {
